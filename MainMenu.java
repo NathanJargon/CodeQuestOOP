@@ -1,33 +1,62 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
 
 public class MainMenu {
 
     public static JPanel createMainMenuPanel(JFrame frame) {
-        JPanel mainMenuPanel = new JPanel();
+        // Custom JPanel to draw the background image
+        JPanel mainMenuPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImage = new ImageIcon("assets/mainmenu.png"); // Path to the background image
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
         mainMenuPanel.setLayout(null);
         mainMenuPanel.setBounds(0, 0, 1280, 720);
-        mainMenuPanel.setBackground(Color.DARK_GRAY);
-
-        JLabel titleLabel = new JLabel("CodeQuest: OOP Edition");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBounds(0, 100, 1280, 50); // Span the entire width of the panel
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the text horizontally
-        mainMenuPanel.add(titleLabel);
+        mainMenuPanel.setDoubleBuffered(true); 
 
         JButton startButton = new JButton("Start");
+        JButton difficultyButton = new JButton("Difficulty: " + QuestionManager.difficulty);
+        JButton quitButton = new JButton("Quit");
+
         UIHelper.styleButton(startButton);
+        startButton.setBackground(Color.RED); // Full red background
+        startButton.setForeground(Color.BLACK); // Black text
+        startButton.setBorder(new LineBorder(Color.BLACK, 2)); // Black border
+        startButton.setFocusPainted(false);
+        startButton.setContentAreaFilled(true);
+        startButton.setOpaque(true);
+        startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        startButton.setFont(new Font("Arial", Font.BOLD, 16));
         startButton.setBounds(540, 250, 200, 50);
         mainMenuPanel.add(startButton);
-
-        JButton difficultyButton = new JButton("Difficulty: " + QuestionManager.difficulty);
+        
         UIHelper.styleButton(difficultyButton);
+        difficultyButton.setBackground(Color.RED); // Full red background
+        difficultyButton.setForeground(Color.BLACK); // Black text
+        difficultyButton.setBorder(new LineBorder(Color.BLACK, 2)); // Black border
+        difficultyButton.setFocusPainted(false);
+        difficultyButton.setContentAreaFilled(true);
+        difficultyButton.setOpaque(true);
+        difficultyButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        difficultyButton.setFont(new Font("Arial", Font.BOLD, 16));
         difficultyButton.setBounds(540, 350, 200, 50);
         mainMenuPanel.add(difficultyButton);
-
-        JButton quitButton = new JButton("Quit");
+        
         UIHelper.styleButton(quitButton);
+        quitButton.setBackground(Color.RED); // Full red background
+        quitButton.setForeground(Color.BLACK); // Black text
+        quitButton.setBorder(new LineBorder(Color.BLACK, 2)); // Black border
+        quitButton.setFocusPainted(false);
+        quitButton.setContentAreaFilled(true);
+        quitButton.setOpaque(true);
+        quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        quitButton.setFont(new Font("Arial", Font.BOLD, 16));
         quitButton.setBounds(540, 450, 200, 50);
         mainMenuPanel.add(quitButton);
 
@@ -49,7 +78,7 @@ public class MainMenu {
 
         difficultyButton.addActionListener(e -> {
             String[] options = {"Easy", "Medium", "Hard"};
-            QuestionManager.difficulty = (String) JOptionPane.showInputDialog(
+            String selectedDifficulty = (String) JOptionPane.showInputDialog(
                     frame,
                     "Select Difficulty:",
                     "Difficulty",
@@ -58,7 +87,12 @@ public class MainMenu {
                     options,
                     QuestionManager.difficulty
             );
-            difficultyButton.setText("Difficulty: " + QuestionManager.difficulty);
+
+            // Only update if the user made a selection (not null)
+            if (selectedDifficulty != null) {
+                QuestionManager.difficulty = selectedDifficulty;
+                difficultyButton.setText("Difficulty: " + QuestionManager.difficulty);
+            }
         });
 
         quitButton.addActionListener(e -> System.exit(0));

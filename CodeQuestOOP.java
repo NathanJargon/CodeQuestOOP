@@ -10,7 +10,7 @@ public class CodeQuestOOP {
         QuestionManager.generateQuestions();
 
         // Create the main frame
-        JFrame frame = new JFrame("CodeQuest OOP Quiz");
+        JFrame frame = new JFrame("CodeQuest: OOP Edition");
         frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);

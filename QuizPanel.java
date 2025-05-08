@@ -5,10 +5,18 @@ import java.awt.event.ActionListener;
 public class QuizPanel {
 
     public static JPanel createQuizPanel(JFrame frame, JPanel mainMenuPanel) {
-        JPanel quizPanel = new JPanel();
+        // Custom JPanel to draw the background image
+        JPanel quizPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImage = new ImageIcon("assets/questions.png"); // Path to the background image
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
         quizPanel.setLayout(null);
         quizPanel.setBounds(0, 0, 1280, 720);
-        quizPanel.setBackground(Color.DARK_GRAY);
 
         // Difficulty label at the top left
         JLabel difficultyLabel = new JLabel("Difficulty: " + QuestionManager.difficulty);
@@ -17,35 +25,35 @@ public class QuizPanel {
         difficultyLabel.setBounds(20, 20, 200, 30);
         quizPanel.add(difficultyLabel);
 
+        // Rewind button
         ImageIcon rewindIcon = new ImageIcon(new ImageIcon("assets/rewind.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         JButton rewindButton = new JButton(rewindIcon);
-        rewindButton.setContentAreaFilled(false); // Make the button background transparent
-        rewindButton.setBorderPainted(false); // Remove the button border
-        rewindButton.setFocusPainted(false); // Remove focus border
-        rewindButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Set cursor to pointer
-        UIHelper.styleButton(rewindButton);
+        rewindButton.setContentAreaFilled(false);
+        rewindButton.setBorderPainted(false);
+        rewindButton.setFocusPainted(false);
+        rewindButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         rewindButton.setBounds(1090, 20, 50, 50);
         quizPanel.add(rewindButton);
-        
+
+        // Back to Menu button
         ImageIcon quitIcon = new ImageIcon(new ImageIcon("assets/close.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         JButton backToMenuButton = new JButton(quitIcon);
-        backToMenuButton.setContentAreaFilled(false); // Make the button background transparent
-        backToMenuButton.setBorderPainted(false); // Remove the button border
-        backToMenuButton.setFocusPainted(false); // Remove focus border
-        backToMenuButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Set cursor to pointer
-        UIHelper.styleButton(backToMenuButton);
+        backToMenuButton.setContentAreaFilled(false);
+        backToMenuButton.setBorderPainted(false);
+        backToMenuButton.setFocusPainted(false);
+        backToMenuButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backToMenuButton.setBounds(1180, 20, 50, 50);
         quizPanel.add(backToMenuButton);
 
         // Question label
         JTextArea questionLabel = new JTextArea();
-        questionLabel.setFont(new Font("Arial", Font.PLAIN, 24));
-        questionLabel.setForeground(Color.WHITE);
-        questionLabel.setBackground(Color.DARK_GRAY);
+        questionLabel.setFont(new Font("Arial", Font.PLAIN, 24)); // Standard font
+        questionLabel.setBackground(Color.RED); // Full red background
+        questionLabel.setForeground(Color.BLACK); // Black texte background
         questionLabel.setLineWrap(true);
         questionLabel.setWrapStyleWord(true);
         questionLabel.setEditable(false);
-        questionLabel.setBounds(440, 100, 400, 60); // Increase height to accommodate wrapping
+        questionLabel.setBounds(440, 100, 400, 60);
         quizPanel.add(questionLabel);
 
         // Option buttons
@@ -53,10 +61,11 @@ public class QuizPanel {
         JButton option2 = new JButton();
         JButton option3 = new JButton();
         JButton option4 = new JButton();
-        UIHelper.styleButton(option1);
-        UIHelper.styleButton(option2);
-        UIHelper.styleButton(option3);
-        UIHelper.styleButton(option4);
+
+        styleQuizButton(option1);
+        styleQuizButton(option2);
+        styleQuizButton(option3);
+        styleQuizButton(option4);
 
         option1.setBounds(440, 200, 400, 40);
         option2.setBounds(440, 260, 400, 40);
@@ -93,6 +102,15 @@ public class QuizPanel {
                 loadQuestion(questionLabel, option1, option2, option3, option4, feedbackLabel);
             } else {
                 feedbackLabel.setText("Quiz Complete! Your score: " + QuestionManager.score + "/" + QuestionManager.questions.size());
+
+                // Disable all interactive components
+                option1.setEnabled(false);
+                option2.setEnabled(false);
+                option3.setEnabled(false);
+                option4.setEnabled(false);
+                rewindButton.setEnabled(false);
+                backToMenuButton.setEnabled(false);
+
                 Timer timer = new Timer(3000, evt -> {
                     frame.remove(quizPanel);
                     frame.add(mainMenuPanel);
@@ -138,6 +156,16 @@ public class QuizPanel {
         });
 
         return quizPanel;
+    }
+
+    private static void styleQuizButton(JButton button) {
+        button.setBackground(Color.RED); // Full red background
+        button.setForeground(Color.BLACK); // Black text
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Hand cursor on hover
     }
 
     private static void loadQuestion(JTextArea questionLabel, JButton option1, JButton option2, JButton option3, JButton option4, JLabel feedbackLabel) {
